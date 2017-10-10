@@ -24,14 +24,14 @@ namespace IssuingService.Controllers
         public string HelloRoot()
         {
             Console.WriteLine("Serving /");
-            return "IssuingService  v5";
+            return "IssuingService v6";
         }
 
         [Route("api/cardholders/counter")]
         [HttpGet]
         public long GetCouter()
         {
-            Console.WriteLine("Connecting to Redis {0} with password {1}", Program.RedisHostName, Program.RedisPassword);
+            Console.WriteLine("Connecting to Redis: {0} with password: {1}", Program.RedisHostName, Program.RedisPassword);
             try
             {
                 var redis = new RedisClient(Program.RedisHostName, 6379, Program.RedisPassword);

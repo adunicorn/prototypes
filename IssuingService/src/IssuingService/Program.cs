@@ -7,7 +7,7 @@ namespace IssuingService
     public class Program
     {
         public const string RedisPassword = "redis";
-        public const string RedisHostName = "redis";
+        public const string RedisHostName = "redis.issuing.svc"; //"redis";
 
         static void Main(string[] args)
         {
