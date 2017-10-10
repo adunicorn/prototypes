@@ -25,8 +25,8 @@ namespace IssuingService.Controllers
         [HttpGet]
         public string HelloRoot()
         {
-            Console.WriteLine("Serving /");
-            return "IssuingService v7";
+            Console.WriteLine("Serving /hello");
+            return "IssuingService v8";
         }
 
 
@@ -34,13 +34,15 @@ namespace IssuingService.Controllers
         [HttpGet]
         public void Error()
         {
+            Console.WriteLine("Serving /error");
             throw new Exception("Should be logged");
         }
 
         [Route("api/cardholders/counter")]
         [HttpGet]
-        public long GetCouter()
+        public long GetCounter()
         {
+            Console.WriteLine("Serving api/cardholders/counter");
             Console.WriteLine("Connecting to Redis: {0} with password: {1}", Program.RedisHostName, Program.RedisPassword);
             try
             {
@@ -78,7 +80,6 @@ namespace IssuingService.Controllers
         public void Add(CardHolder cardHolder)
         {
             Console.WriteLine("Serving [POST] /api/cardholder");
-
             try{
                 var factory = new ConnectionFactory() { HostName = "rabbitmq" };
 
