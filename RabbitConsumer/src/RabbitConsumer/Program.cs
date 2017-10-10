@@ -11,18 +11,21 @@ namespace RabbitConsumer
     class Program
     {
         private static readonly string RabbitMQHostName = "rabbit";
-        private static readonly string RedisHostName = "redis";
+        public const string RedisPassword = "redis";
+        public const string RedisHostName = "redis";
 
         static void Main(string[] args)
         {
-            for (var i = 0; i < 10; i++)
+            Console.WriteLine("Starting application");
+            while(true)
                 try
                 {
+                    Console.WriteLine("Registering a consumer");
                     RegisterConsumer();
                 }
                 catch
                 {
-                    var sleep = 1000;
+                    var sleep = 2000;
                     Console.WriteLine(string.Format("Connection to RabbitMQ failed. Retrying in {0} seconds", sleep/1000));
                     Thread.Sleep(sleep);
                 }
@@ -30,7 +33,7 @@ namespace RabbitConsumer
 
         private static void RegisterConsumer()
         {
-            
+            Console.WriteLine("Connecting to RabbitMQ: {0}", RabbitMQHostName);
             var factory = new ConnectionFactory() { HostName = RabbitMQHostName };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
@@ -50,10 +53,10 @@ namespace RabbitConsumer
                     {
                         var body = ea.Body;
                         var message = Encoding.UTF8.GetString(body);
-                        Console.WriteLine(" [x] {0}", message);
+                        Console.WriteLine(" Consumer received message {0}", message);
 
                         var cardHolder = JsonConvert.DeserializeObject<CardHolder>(message);
-                        var redis = new RedisClient(RedisHostName, 6379);
+                        var redis = new RedisClient(RedisHostName, 6379, RedisPassword);
                         redis.SetValue("cardholder_" + cardHolder.ID, message);
                         Console.WriteLine("Stored in Redis: " + ("cardholder_" + cardHolder.ID));
 
