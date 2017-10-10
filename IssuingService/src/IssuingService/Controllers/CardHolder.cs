@@ -19,12 +19,22 @@ namespace IssuingService.Controllers
             return "Hello, world!";
         }
 
+        
+
         [Route("")]
         [HttpGet]
         public string HelloRoot()
         {
             Console.WriteLine("Serving /");
-            return "IssuingService v6";
+            return "IssuingService v7";
+        }
+
+
+        [Route("error")]
+        [HttpGet]
+        public void Error()
+        {
+            throw new Exception("Should be logged");
         }
 
         [Route("api/cardholders/counter")]
@@ -67,19 +77,28 @@ namespace IssuingService.Controllers
         [HttpPost]
         public void Add(CardHolder cardHolder)
         {
-            var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+            Console.WriteLine("Serving [POST] /api/cardholder");
 
-            using (var connection = factory.CreateConnection())
-            using (var channel = connection.CreateModel())
+            try{
+                var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+
+                using (var connection = factory.CreateConnection())
+                    using (var channel = connection.CreateModel())
+                    {
+                        channel.ExchangeDeclare(exchange: "CardHolder", type: "topic", durable: true);
+
+                        var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(cardHolder));
+
+                        channel.BasicPublish(exchange: "CardHolder",
+                                             routingKey: "Add",
+                                             basicProperties: null,
+                                             body: body);
+                    }
+            }
+            catch (Exception ex)
             {
-                channel.ExchangeDeclare(exchange: "CardHolder", type: "topic", durable: true);
-
-                var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(cardHolder));
-
-                channel.BasicPublish(exchange: "CardHolder",
-                                     routingKey: "Add",
-                                     basicProperties: null,
-                                     body: body);
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
             }
         }
     }
