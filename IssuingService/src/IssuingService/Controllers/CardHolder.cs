@@ -19,16 +19,13 @@ namespace IssuingService.Controllers
             return "Hello, world!";
         }
 
-        
-
         [Route("")]
         [HttpGet]
         public string HelloRoot()
         {
             Console.WriteLine("Serving /");
-            return "IssuingService v9";
+            return "IssuingService v10";
         }
-
 
         [Route("api/cardholders/counter")]
         [HttpGet]
