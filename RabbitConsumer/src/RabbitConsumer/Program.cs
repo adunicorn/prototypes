@@ -10,7 +10,7 @@ namespace RabbitConsumer
 {
     class Program
     {
-        private static readonly string RabbitMQHostName = "rabbit";
+        private static readonly string RabbitMQHostName = "rabbitmq";
         public const string RedisPassword = "redis";
         public const string RedisHostName = "redis";
 
@@ -33,7 +33,7 @@ namespace RabbitConsumer
 
         private static void RegisterConsumer()
         {
-            Console.WriteLine("Connecting to RabbitMQ: {0}", RabbitMQHostName);
+            Console.WriteLine("Connecting to RabbitMQ hostname: {0}", RabbitMQHostName);
             var factory = new ConnectionFactory() { HostName = RabbitMQHostName };
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
