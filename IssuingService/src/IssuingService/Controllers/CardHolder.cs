@@ -25,18 +25,10 @@ namespace IssuingService.Controllers
         [HttpGet]
         public string HelloRoot()
         {
-            Console.WriteLine("Serving /hello");
-            return "IssuingService v8";
+            Console.WriteLine("Serving /");
+            return "IssuingService v9";
         }
 
-
-        [Route("error")]
-        [HttpGet]
-        public void Error()
-        {
-            Console.WriteLine("Serving /error");
-            throw new Exception("Should be logged");
-        }
 
         [Route("api/cardholders/counter")]
         [HttpGet]
@@ -81,7 +73,7 @@ namespace IssuingService.Controllers
         {
             Console.WriteLine("Serving [POST] /api/cardholder");
             try{
-                var factory = new ConnectionFactory() { HostName = "rabbitmq" };
+                var factory = new ConnectionFactory() { HostName = Program.RabbitMQHostName };
 
                 using (var connection = factory.CreateConnection())
                     using (var channel = connection.CreateModel())

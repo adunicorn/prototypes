@@ -6,9 +6,10 @@ namespace IssuingService
 {
     public class Program
     {
-        public const string RedisPassword = "redis";
-        public const string RedisHostName = "redis.issuing.svc"; //"redis";
-
+        public static string RedisPassword = Environment.GetEnvironmentVariable("REDIS_PASSWORD");
+        public static string RedisHostName = Environment.GetEnvironmentVariable("REDIS_SERVICE_HOST");
+        public static string RabbitMQHostName = Environment.GetEnvironmentVariable("RABBITMQ_SERVICE_HOST");
+        
         static void Main(string[] args)
         {
             string baseAddress = "http://*:5000/";
