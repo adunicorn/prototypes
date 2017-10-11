@@ -32,10 +32,33 @@ namespace IssuingService.Controllers
         public long GetCounter()
         {
             Console.WriteLine("Serving api/cardholders/counter");
-            Console.WriteLine("Connecting to Redis: {0} with password: {1}", Program.RedisHostName, Program.RedisPassword);
+            Console.WriteLine("Connecting to Redis: {0} with password: {1}", Program.RedisSlaveHostName, Program.RedisPassword);
             try
             {
-                var redis = new RedisClient(Program.RedisHostName, 6379, Program.RedisPassword);
+                var redis = new RedisClient(Program.RedisSlaveHostName, 6379, Program.RedisPassword);
+
+                var counter = redis.Get<int>("counter");
+                return counter;
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.StackTrace);
+                return -1;
+            }
+        }
+
+
+        [Route("api/cardholders/counter/increment")]
+        [HttpGet]
+        public long IncrementCounter()
+        {
+            Console.WriteLine("Serving api/cardholders/counter");
+            Console.WriteLine("Connecting to Redis: {0} with password: {1}", Program.RedisMasterHostName, Program.RedisPassword);
+            try
+            {
+                var redis = new RedisClient(Program.RedisMasterHostName, 6379, Program.RedisPassword);
 
                 var counter = redis.Increment("counter", 1);
                 return counter;
@@ -49,6 +72,7 @@ namespace IssuingService.Controllers
             }
         }
 
+
         [Route("api/cardholder/{id}")]
         [HttpGet]
         public CardHolder Get(string id)
@@ -56,7 +80,7 @@ namespace IssuingService.Controllers
             if (id == "1")
                 return new CardHolder {ID = "1", Firstname = "Marco", Lastname = "Bernasconi"};
 
-            var redis = new RedisClient(Program.RedisHostName, 6379, Program.RedisPassword);
+            var redis = new RedisClient(Program.RedisSlaveHostName, 6379, Program.RedisPassword);
             var cardHolder = redis.Get<CardHolder>("cardholder_" + id);
             if(cardHolder == null)
                 throw  new HttpResponseException(HttpStatusCode.NotFound);

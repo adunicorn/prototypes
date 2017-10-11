@@ -6,8 +6,9 @@ namespace IssuingService
 {
     public class Program
     {
-        public static string Version = "v11";
-        public static string RedisHostName = "localhost";
+        public static string Version = "v12";
+        public static string RedisMasterHostName = Environment.GetEnvironmentVariable("REDIS_MASTER_SERVICE_HOST");
+        public static string RedisSlaveHostName = "localhost";
         public static string RedisPassword = "redis";
         public static string RabbitMQHostName = Environment.GetEnvironmentVariable("RABBITMQ_SERVICE_HOST");
 
