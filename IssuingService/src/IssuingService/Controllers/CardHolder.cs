@@ -24,7 +24,7 @@ namespace IssuingService.Controllers
         public string HelloRoot()
         {
             Console.WriteLine("Serving /");
-            return "IssuingService v10";
+            return string.Format("IssuingService {0}", Program.Version);
         }
 
         [Route("api/cardholders/counter")]

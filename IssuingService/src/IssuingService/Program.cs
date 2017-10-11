@@ -6,10 +6,11 @@ namespace IssuingService
 {
     public class Program
     {
-        public static string RedisHostName = Environment.GetEnvironmentVariable("REDIS_SERVICE_HOST");
+        public static string Version = "v11";
+        public static string RedisHostName = "localhost";
         public static string RedisPassword = "redis";
         public static string RabbitMQHostName = Environment.GetEnvironmentVariable("RABBITMQ_SERVICE_HOST");
-        
+
         static void Main(string[] args)
         {
             string baseAddress = "http://*:5000/";
