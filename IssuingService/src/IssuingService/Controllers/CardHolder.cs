@@ -11,20 +11,31 @@ namespace IssuingService.Controllers
 {
     public class CardHolderController : ApiController
     {
-        [Route("hello")]
-        [HttpGet]
-        public string Hello()
+        public static string GetLocalIPAddress()
         {
-            Console.WriteLine("Serving /hello");
-            return "Hello, world!";
+
+
+            string str="";
+
+            System.Net.Dns.GetHostName();
+
+            IPHostEntry ipEntry = System.Net.Dns.GetHostEntry(str);
+
+            IPAddress[] addr = ipEntry.AddressList;
+
+            return addr[addr.Length - 1].ToString();
         }
 
         [Route("")]
         [HttpGet]
         public string HelloRoot()
         {
-            Console.WriteLine("Serving /");
-            return string.Format("IssuingService {0}", Program.Version);
+            var sb = new StringBuilder();
+            sb.AppendLine(string.Format("IP: {0}", GetLocalIPAddress()));
+            sb.AppendLine("Serving /");
+            sb.AppendLine(string.Format("IssuingService: {0}", Program.Version));
+
+            return sb.ToString();
         }
 
         [Route("api/cardholders/counter")]
