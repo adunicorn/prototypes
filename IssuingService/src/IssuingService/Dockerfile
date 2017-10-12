@@ -1,5 +1,5 @@
 FROM mono
-COPY src/IssuingService/bin/Debug /program
+COPY /bin/Debug /program
 WORKDIR /program
 USER 1001
 EXPOSE 5000

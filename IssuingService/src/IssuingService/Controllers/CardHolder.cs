@@ -9,6 +9,14 @@ using ServiceStack.Redis;
 
 namespace IssuingService.Controllers
 {
+    public class Info
+    {
+        public string IP { get; set; }
+        public string Serving { get; set; }
+        public string Service { get; set; }
+        public string Version { get; set; }
+    }
+
     public class CardHolderController : ApiController
     {
         public static string GetLocalIPAddress()
@@ -28,14 +36,14 @@ namespace IssuingService.Controllers
 
         [Route("")]
         [HttpGet]
-        public string HelloRoot()
+        public Info HelloRoot()
         {
-            var sb = new StringBuilder();
-            sb.AppendLine(string.Format("IP: {0}", GetLocalIPAddress()));
-            sb.AppendLine("Serving /");
-            sb.AppendLine(string.Format("IssuingService: {0}", Program.Version));
-
-            return sb.ToString();
+            return new Info {
+                IP = GetLocalIPAddress(),
+                Serving = "/",
+                Service = "IssuingService",
+                Version = Program.Version
+            };
         }
 
         [Route("api/cardholders/counter")]
