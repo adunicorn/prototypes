@@ -81,11 +81,11 @@ namespace IssuingService.Controllers
                 using (var connection = factory.CreateConnection())
                 using (var channel = connection.CreateModel())
                 {
-                    channel.ExchangeDeclare(exchange: "transaction", type: "topic", durable: true);
+                    channel.ExchangeDeclare(exchange: "Transaction", type: "topic", durable: true);
 
                     var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(transaction));
 
-                    channel.BasicPublish(exchange: "transaction",
+                    channel.BasicPublish(exchange: "Transaction",
                         routingKey: "Add",
                         basicProperties: null,
                         body: body);
