@@ -20,7 +20,7 @@ namespace RabbitConsumer
         static void Main(string[] args)
         {
             Console.WriteLine("Starting application");
-            while(true)
+            while (true)
                 try
                 {
                     Console.WriteLine("Registering a consumer");
@@ -36,10 +36,11 @@ namespace RabbitConsumer
 
         private static void RegisterConsumer()
         {
-            var PGSQLConnectionString = $"User ID=user;Password=user;Host={Environment.GetEnvironmentVariable("POSTGRESQL_SERVICE_HOST")};Port=5432;Database=issuing;";
+            var PGSQLConnectionString =
+                $"User ID=user;Password=user;Host={Environment.GetEnvironmentVariable("POSTGRESQL_SERVICE_HOST")};Port=5432;Database=issuing;";
 
             Console.WriteLine("Connecting to RabbitMQ hostname: {0}", RabbitMQHostName);
-            var factory = new ConnectionFactory() { HostName = RabbitMQHostName };
+            var factory = new ConnectionFactory() {HostName = RabbitMQHostName};
             using (var connection = factory.CreateConnection())
             using (var channel = connection.CreateModel())
             {
@@ -76,7 +77,8 @@ ELSE
        SET description = @description, amount = @amount
      WHERE id = @id
 ";
-                            conn.Query<Transaction>(querySQL, new {transaction.id, transaction.description, transaction.amount});
+                            conn.Query<Transaction>(querySQL,
+                                new {transaction.id, transaction.description, transaction.amount});
                         }
                     }
                     catch (Exception ex)
@@ -96,6 +98,7 @@ ELSE
                 Thread.Sleep(Timeout.Infinite);
             }
         }
+
         public static IDbConnection OpenConnection(string connStr)
         {
             var conn = new NpgsqlConnection(connStr);
