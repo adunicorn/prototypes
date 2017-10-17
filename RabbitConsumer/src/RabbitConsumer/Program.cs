@@ -69,14 +69,9 @@ namespace RabbitConsumer
                         using (var conn = OpenConnection(PGSQLConnectionString))
                         {
                             var querySQL = @"
-IF(EXISTS(SELECT TOP 1 1 FROM transactions WHERE id = @id))
-    INSERT INTO transactions(id, description, amount)
-        VALUES(@id, @description, @amount)
-ELSE
-    UPDATE transactions
-       SET description = @description, amount = @amount
-     WHERE id = @id
-";
+    delete from transactions where id = @id;
+    insert into transactions(id, description, amount)
+       values(@id, @description, @amount);";
                             conn.Query<Transaction>(querySQL,
                                 new {transaction.id, transaction.description, transaction.amount});
                         }
