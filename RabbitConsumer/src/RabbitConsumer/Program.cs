@@ -15,11 +15,12 @@ namespace RabbitConsumer
     {
         public static string RedisMasterHostName = Environment.GetEnvironmentVariable("REDIS_MASTER_SERVICE_HOST");
         public const string RedisPassword = "redis";
+        public const string Version = "v4";
         private static readonly string RabbitMQHostName = Environment.GetEnvironmentVariable("RABBITMQ_SERVICE_HOST");
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Starting application");
+            Console.WriteLine("Starting application " + Version);
             while (true)
                 try
                 {
@@ -62,18 +63,31 @@ namespace RabbitConsumer
                         Console.WriteLine("Consumer received message {0}", message);
 
                         var transaction = JsonConvert.DeserializeObject<Transaction>(message);
+
+                        Console.WriteLine("Storing in Redis. Transaction_" + transaction.id);
                         var redis = new RedisClient(RedisMasterHostName, 6379, RedisPassword);
                         redis.SetValue("transaction_" + transaction.id, message);
-                        Console.WriteLine("Stored in Redis: " + ("transaction_" + transaction.id));
 
-                        using (var conn = OpenConnection(PGSQLConnectionString))
+                        Console.WriteLine("Storing in PostgreSQL");
+
+                        using (var conn = new NpgsqlConnection(PGSQLConnectionString))
                         {
-                            var querySQL = @"
-    delete from transactions where id = @id;
-    insert into transactions(id, description, amount)
-       values(@id, @description, @amount);";
+                            conn.Open();
+                            var tran = conn.BeginTransaction();
+                            using (var cmd = new NpgsqlCommand())
+                            {
+                                cmd.Connection = conn;
+                                cmd.CommandText = "LOCK table transactions IN ACCESS EXCLUSIVE MODE";
+                                cmd.ExecuteNonQuery();
+                            }
+
+                            var querySQL = @"delete from transactions where id = @id;
+                                             insert into transactions(id, description, amount) values(@id, @description, @amount);";
                             conn.Query<Transaction>(querySQL,
                                 new {transaction.id, transaction.description, transaction.amount});
+                            Thread.Sleep(2000);
+                            tran.Commit();
+                            Console.WriteLine("Done.");
                         }
                     }
                     catch (Exception ex)
