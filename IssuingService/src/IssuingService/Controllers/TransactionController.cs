@@ -72,7 +72,7 @@ namespace IssuingService.Controllers
 
         [Route("api/transaction")]
         [HttpPost]
-        public void Add(Transaction transaction)
+        public string Add(Transaction transaction)
         {
             Console.WriteLine("Serving [POST] /api/transaction");
             try{
@@ -83,18 +83,21 @@ namespace IssuingService.Controllers
                 {
                     channel.ExchangeDeclare(exchange: "Transaction", type: "topic", durable: true);
 
-                    var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(transaction));
+                    var json = JsonConvert.SerializeObject(transaction);
+                    var body = Encoding.UTF8.GetBytes(json);
 
                     channel.BasicPublish(exchange: "Transaction",
                         routingKey: "Add",
                         basicProperties: null,
                         body: body);
+                    return json;
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 Console.WriteLine(ex.StackTrace);
+                throw ex;
             }
         }
     }
