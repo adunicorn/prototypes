@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+  creationTimestamp: null
+  labels:
+    app: redis-slave
+  name: redis-slave
+spec:
+  ports:
+  - name: 6379-tcp
+    port: 6379
+    protocol: TCP
+    targetPort: 6379
+  selector:
+    deploymentconfig: redis-slave
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

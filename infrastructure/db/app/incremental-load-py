@@ -1,0 +1,37 @@
+import psycopg2
+import sys
+import os
+import time
+import generate_random_transactions
+
+print("incremental-load v4")
+
+
+# Try to connect
+
+host=os.getenv('POSTGRESQL_SERVICE_HOST')
+connection_string="host='{host}' port='5432' dbname='{dbname}' user='{user}' password='{password}'".format(
+        host=host,
+        dbname='issuing',
+        user='user',
+        password='user'
+    )
+
+print("Connecting to:{host} with connection string: {connection_string}".format(host=host, connection_string=connection_string))
+connection = psycopg2.connect(connection_string)
+
+with connection.cursor() as cursor:
+    while True:
+        lock_statement="LOCK table transactions IN ACCESS EXCLUSIVE MODE"
+        print(lock_statement)
+        cursor.execute(lock_statement)
+
+        id, description, price, currency = generate_random_transactions.get_one()
+        insert = "insert into transactions(id, description, amount, currency) VALUES('{id}', '{description}', '{price:.2f}', {currency});".format(id = id, description = description, price = price, currency = currency)
+        print(insert)
+        cursor.execute(insert)
+
+        time.sleep(2)
+        connection.commit()
+connection.close()
+print("Done")
