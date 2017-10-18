@@ -1,5 +1,5 @@
-**/src/**/bin
-**/src/**/obj
+apps/**/bin
+apps/**/obj
 *.suo
 .idea
 .vs

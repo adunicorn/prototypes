@@ -1,11 +1,11 @@
 import psycopg2
 import sys
 
-
 # Try to connect
 if not len(sys.argv) == 3:
     print("Usage: python execsql.py postgresql-hostname sqlscript.sql")
     exit
+
 
 host=sys.argv[1]
 script=sys.argv[2]
