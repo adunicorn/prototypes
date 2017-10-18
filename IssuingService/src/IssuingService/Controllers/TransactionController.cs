@@ -60,7 +60,7 @@ namespace IssuingService.Controllers
         public Transaction Get(string id)
         {
             if (id == "1")
-                return new Transaction {id = "1", description = "Some hotel", amount = "100 CHF"};
+                return new Transaction {id = "1", description = "Some hotel", amount = "100", currency = "CHF"};
 
             var redis = new RedisClient(Program.RedisSlaveHostName, 6379, Program.RedisPassword);
             var transaction = redis.Get<Transaction>("transaction_" + id);
@@ -85,7 +85,7 @@ namespace IssuingService.Controllers
 
                     var json = JsonConvert.SerializeObject(transaction);
                     var body = Encoding.UTF8.GetBytes(json);
-
+                    Console.WriteLine("Publishing the message: "  + json);
                     channel.BasicPublish(exchange: "Transaction",
                         routingKey: "Add",
                         basicProperties: null,

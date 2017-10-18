@@ -82,9 +82,9 @@ namespace RabbitConsumer
                             }
 
                             var querySQL = @"delete from transactions where id = @id;
-                                             insert into transactions(id, description, amount) values(@id, @description, @amount);";
+                                             insert into transactions(id, description, amount, currency) values(@id, @description, @amount, @currency);";
                             conn.Query<Transaction>(querySQL,
-                                new {transaction.id, transaction.description, transaction.amount});
+                                                    new {transaction.id, transaction.description, transaction.amount, transaction.currency});
                             Thread.Sleep(2000);
                             tran.Commit();
                             Console.WriteLine("Done.");
