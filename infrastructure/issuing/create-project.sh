@@ -5,7 +5,6 @@ oc login -u admin # -p OriginAdmin
 PROJECT_NAME=issuing
 echo "\n\n\n** Creating the project ${PROJECT_NAME}.."
 oc new-project ${PROJECT_NAME}
-oc project issuing
 
 echo "\n\n\n** Importing the docker images"
 oc import-image redis --from=docker.io/bitnami/redis --confirm
@@ -37,13 +36,6 @@ oc create -f openshift-resources/issuing-deployment-config.yml
 oc create -f openshift-resources/issuing-service.yml
 oc create -f openshift-resources/issuing-route.yml
 oc create -f openshift-resources/issuing-minishift-route.yml
-
-
-## Issuing
-oc create -f openshift-resources/old-issuing-deployment-config.yml
-oc create -f openshift-resources/old-issuing-service.yml
-oc create -f openshift-resources/old-issuing-route.yml
-oc create -f openshift-resources/old-issuing-minishift-route.yml
 
 ## Consumer
 oc create -f openshift-resources/consumer-deployment-config.yml
