@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: issuing
+    template: postgresql-ephemeral-template
+  name: postgresql-ingress
+spec:
+  ports:
+  - nodePort: 30111
+    port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    name: postgresql
+  sessionAffinity: None
+  type: LoadBalancer
+status:
+  loadBalancer: {}
