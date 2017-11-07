@@ -3,25 +3,29 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using RestSharp;
 
 namespace IssuingClient
 {
     public partial class Form1 : Form
     {
-        delegate void CallerDelegate(Panel panel);
+        delegate void CallerDelegate(Label label, string target);
         readonly Random _rnd = new Random();
         private static bool _stop;
+        private static bool _wait;
 
         public Form1()
         {
             InitializeComponent();
+            comboBox1.SelectedIndex = 0;
+            cmbService.SelectedIndex = 0;
         }
 
         private void GenerateCallers(int count, string target)
         {
             box.Controls.Clear();
 
-            var panels = new List<Panel>();
+            var labels = new List<Label>();
             int top = 13;
             int colIndex = 0;
 
@@ -29,17 +33,24 @@ namespace IssuingClient
             {
                 int squareSize = 50;
 
-                var p = new Panel();
-                p.Top = top;
-                p.Left = 5 + (squareSize + 5) * colIndex;
-                p.Height = squareSize;
-                p.Width = squareSize;
+                var label = new Label();
+                label.Top = top;
+                label.Left = 5 + (squareSize + 5) * colIndex;
+                label.Height = squareSize;
+                label.Width = squareSize;
 
-                p.BackColor = Color.White;
+                var textHeight = label.Height - label.Top - label.Bottom;
 
-                box.Controls.Add(p);
+                if (textHeight > 0)
+                {
+                    label.Font = new Font(label.Font.FontFamily, textHeight, GraphicsUnit.Pixel);
+                }
+                label.BackColor = Color.White;
+                label.Text = "asd";
 
-                panels.Add(p);
+                box.Controls.Add(label);
+
+                labels.Add(label);
                 colIndex++;
                 if (colIndex % 10 == 0)
                 {
@@ -48,33 +59,57 @@ namespace IssuingClient
                 }
             }
 
-            foreach (var p in panels)
+            _stop = false;
+            _wait = true;
+            foreach (var l in labels)
             {
                 var caller = new CallerDelegate(StartCaller);
-                caller.BeginInvoke(p, null, null);
+                caller.BeginInvoke(l, target, null, null);
             }
+            _wait = false;
         }
 
-        private void StartCaller(Panel panel)
+        private void StartCaller(Label label, string target)
         {
+            while (_wait) { }
+
+            var client = new RestClient(target);
+            client.Timeout = 100;
+            var rnd = new Random();
+
             while (!_stop)
             {
-                WaitRand(500);
-                panel.BackColor = Color.AntiqueWhite;
+                WaitRand(3000);
+                label.BackColor = Color.White;
+                Thread.Sleep(100);
 
-                WaitRand(500);
-                panel.BackColor = Color.BlueViolet;
+                try
+                {
+                    var tid = rnd.Next(1, 10);
+
+                    var response = client.Execute(new RestRequest($"/api/transaction/{tid}", Method.GET));
+                    if (!response.IsSuccessful)
+                        throw new Exception($"Response code: {response.StatusCode}");
+
+                    label.BackColor = Color.Green;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    label.BackColor = Color.Red;
+                }
             }
         }
 
         private void WaitRand(int ms)
         {
-                Thread.Sleep(_rnd.Next(ms));
+            Thread.Sleep(_rnd.Next(ms));
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            GenerateCallers(32, "");
+            var target = (cmbService.SelectedIndex == 0) ? "http://localhost:9100/" : "http://localhost:5000/";
+            GenerateCallers(int.Parse(comboBox1.SelectedItem.ToString()), target);
         }
 
         private void button2_Click(object sender, EventArgs e)
