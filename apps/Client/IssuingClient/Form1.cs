@@ -128,18 +128,20 @@ CHF";
 
             while (!_stop)
             {
-                await Task.Delay(_rnd.Next(100, 300));
-
                 try
                 {
                     var tid = 1;//_rnd.Next(1, 3);
+
+                    await Task.Delay(_rnd.Next(500, 1000));
+                    SetText(label, "...");
+                    await Task.Delay(50);
 
                     var response = await client.ExecuteGetTaskAsync<Transaction>(new RestRequest($"/api/transaction/{tid}"));
                     if (!response.IsSuccessful)
                         throw new Exception($"Response code: {response.StatusCode}");
 
-                    label.BeginInvoke((MethodInvoker) delegate { label.Text = $@"{response.Data.amount}
-{response.Data.currency}"; });
+                    SetText(label, $@"{response.Data.amount}
+{response.Data.currency}");
 
                     var header = response.Headers.FirstOrDefault(x => x.Name == "version");
 
@@ -155,18 +157,23 @@ CHF";
                 }
                 catch (Exception e)
                 {
-                    label.BeginInvoke((MethodInvoker)delegate { label.Text = (++errorCounter).ToString(); });
+                    SetText(label, (++errorCounter).ToString());
                     Console.WriteLine(e);
                     await ChangeColorAsync(label, Color.Red);
                 }
             }
         }
 
+        private static void SetText(Label label, string text)
+        {
+            label.BeginInvoke((MethodInvoker) delegate { label.Text = text; });
+        }
+
         private static async Task ChangeColorAsync(Label label, Color labelBackColor)
         {
             label.BackColor = Color.DimGray;
 
-            await Task.Delay(20);
+            await Task.Delay(50);
 
             label.BackColor = labelBackColor;
         }
