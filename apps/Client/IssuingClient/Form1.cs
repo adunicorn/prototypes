@@ -105,7 +105,7 @@ namespace IssuingClient
             label.Height = height;
             label.Width = width;
             label.Font = new Font(label.Font.FontFamily, 100, label.Font.Style);
-            label.Text = @"10'000
+            label.Text = @"10000.99
 CHF";
 
             while (label.Width < System.Windows.Forms.TextRenderer.MeasureText(label.Text, new Font(_labelFontFamily, label.Font.Size, label.Font.Style)).Width ||
@@ -114,7 +114,7 @@ CHF";
                 label.Font = new Font(label.Font.FontFamily, label.Font.Size - 0.5f, label.Font.Style);
             }
 
-            return label.Font.Size;
+            return label.Font.Size / 1.5f;
         }
 
         private async System.Threading.Tasks.Task StartCallerAsync(Label label, string target)
@@ -122,7 +122,7 @@ CHF";
             while (_wait) { }
 
             var client = new RestClient(target);
-            client.Timeout = 5000;
+            client.Timeout = 7000;
 
             int errorCounter = 0;
 
