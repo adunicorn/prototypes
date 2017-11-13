@@ -9,7 +9,7 @@ metadata:
     app: issuing
   name: issuing
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     app: issuing
     deploymentconfig: issuing
@@ -36,6 +36,12 @@ spec:
       - image: adunicorn/issuing:latest
         imagePullPolicy: Always
         name: issuing
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 15
+          timeoutSeconds: 1
         ports:
         - containerPort: 5000
           protocol: TCP
