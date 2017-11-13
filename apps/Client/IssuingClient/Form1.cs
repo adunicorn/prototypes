@@ -114,7 +114,7 @@ CHF";
                 label.Font = new Font(label.Font.FontFamily, label.Font.Size - 0.5f, label.Font.Style);
             }
 
-            return label.Font.Size;
+            return label.Font.Size / 2;
         }
 
         private async System.Threading.Tasks.Task StartCallerAsync(Label label, string target)
@@ -130,7 +130,7 @@ CHF";
             {
                 try
                 {
-                    var tid = 1;//_rnd.Next(1, 3);
+                    var tid = _rnd.Next(2, 200);
 
                     await Task.Delay(_rnd.Next(500, 1000));
                     SetText(label, "...");
@@ -186,7 +186,8 @@ CHF";
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            var target = (cmbService.SelectedIndex == 0) ? "http://localhost:9100/" : "http://localhost:5000/";
+            var target = (cmbService.SelectedIndex == 0) ? "http://oldissuing.192.168.64.11.nip.io" : "http://issuing.192.168.64.11.nip.io/";
+            Console.WriteLine($"Using target {target}");
             GenerateCallers(int.Parse(comboBox1.SelectedItem.ToString()), target);
         }
 
