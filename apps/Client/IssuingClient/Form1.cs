@@ -91,11 +91,11 @@ namespace IssuingClient
 
             _stop = false;
             _wait = true;
-            foreach (var l in labels)
-            {
-                var caller = new CallerDelegate(StartCallerAsync);
-                caller.BeginInvoke(l, target, null, null);
-            }
+
+            var tasks = labels.Select(l => new Task( async () => await StartCallerAsync(l, target)));
+
+            Parallel.ForEach(tasks, t => t.Start());
+
             _wait = false;
         }
 
@@ -114,7 +114,7 @@ CHF";
                 label.Font = new Font(label.Font.FontFamily, label.Font.Size - 0.5f, label.Font.Style);
             }
 
-            return label.Font.Size / 2;
+            return label.Font.Size;
         }
 
         private async System.Threading.Tasks.Task StartCallerAsync(Label label, string target)
@@ -133,29 +133,35 @@ CHF";
                     var tid = _rnd.Next(2, 900);
 
                     await Task.Delay(1000);
-                    SetText(label, "...");
+                    //SetText(label, "...");
 
                     var response = await client.ExecuteGetTaskAsync<Transaction>(new RestRequest($"/api/transaction/{tid}"));
-                    if (!response.IsSuccessful)
-                        throw new Exception($"Response code: {response.StatusCode}");
 
-                    SetText(label, $@"{response.Data.amount}
+                    if (!response.IsSuccessful)
+                    {
+                        SetText(label, (++errorCounter).ToString());
+                        await ChangeColorAsync(label, Color.Red);
+                    }
+                    else
+                    {
+                        SetText(label, $@"{response.Data.amount}
 {response.Data.currency}");
 
-                    var header = response.Headers.FirstOrDefault(x => x.Name == "version");
+                        var header = response.Headers.FirstOrDefault(x => x.Name == "version");
 
-                    if(header == null || header.Value.ToString().Contains("1"))
-                        await ChangeColorAsync(label, Color.Green);
-                    else
-                        await ChangeColorAsync(label, Color.Yellow);
+                        if(header == null || header.Value.ToString().Contains("1"))
+                            await ChangeColorAsync(label, Color.Green);
+                        else
+                            await ChangeColorAsync(label, Color.Yellow);
 
-                    errorCounter = 0;
+                        errorCounter = 0;
+                    }
                 }
                 catch (Exception e)
                 {
                     SetText(label, (++errorCounter).ToString());
                     Console.WriteLine(e);
-                    await ChangeColorAsync(label, Color.Red);
+                    await ChangeColorAsync(label, Color.Yellow);
                 }
             }
         }
