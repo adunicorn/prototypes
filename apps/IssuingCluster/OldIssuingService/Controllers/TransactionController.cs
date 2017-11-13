@@ -2,6 +2,7 @@
 using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Web.Http;
 using Newtonsoft.Json;
@@ -45,23 +46,33 @@ namespace OldIssuingService.Controllers
 
         [Route("api/transaction/{id}")]
         [HttpGet]
-        public Transaction Get(string id)
+        public HttpResponseMessage Get(string id)
         {
             Console.WriteLine($"Serving [GET] /api/transaction/{id}");
 
+            HttpResponseMessage response;
+
             if (id == "1")
-                return new Transaction {id = "1", description = "Some hotel", amount = "100", currency = "CHF"};
-
-            using (var conn = new NpgsqlConnection(_pgsqlConnectionString))
+                response = Request.CreateResponse(HttpStatusCode.OK, new Transaction {id = "1", description = "Some hotel", amount = "100", currency = "CHF"});
+            else
             {
-                conn.Open();
+                using (var conn = new NpgsqlConnection(_pgsqlConnectionString))
+                {
+                    conn.Open();
 
-                var output = conn.QueryFirstOrDefault<Transaction>("select id, description, amount, currency from transactions where id = @id", new {id});
-                if(output == null)
-                    throw  new HttpResponseException(HttpStatusCode.NotFound);
+                    var output = conn.QueryFirstOrDefault<Transaction>(
+                        "select id, description, amount, currency from transactions where id = @id", new {id});
+                    if (output == null)
+                        throw new HttpResponseException(HttpStatusCode.NotFound);
 
-                return output;
+                    response = Request.CreateResponse(HttpStatusCode.OK, output);
+                }
+
             }
+
+            response.Headers.Add("version", Program.Version);
+
+            return response;
         }
 
         [Route("api/transaction")]

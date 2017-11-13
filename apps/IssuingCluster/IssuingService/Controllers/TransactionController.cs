@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Web.Http;
 using IssuingService.Models;
@@ -57,17 +58,25 @@ namespace IssuingService.Controllers
 
         [Route("api/transaction/{id}")]
         [HttpGet]
-        public Transaction Get(string id)
+        public HttpResponseMessage Get(string id)
         {
+            HttpResponseMessage response;
+
             if (id == "1")
-                return new Transaction {id = "1", description = "Some hotel", amount = "100", currency = "CHF"};
+                response = Request.CreateResponse(HttpStatusCode.OK, new Transaction {id = "1", description = "Some hotel", amount = "100", currency = "CHF"});
+            else
+            {
+                var redis = new RedisClient(Program.RedisSlaveHostName, 6379, Program.RedisPassword);
+                var transaction = redis.Get<Transaction>("transaction_" + id);
+                if (transaction == null)
+                    throw new HttpResponseException(HttpStatusCode.NotFound);
 
-            var redis = new RedisClient(Program.RedisSlaveHostName, 6379, Program.RedisPassword);
-            var transaction = redis.Get<Transaction>("transaction_" + id);
-            if(transaction == null)
-                throw  new HttpResponseException(HttpStatusCode.NotFound);
+                response = Request.CreateResponse(HttpStatusCode.OK, transaction);
+            }
 
-            return transaction;
+            response.Headers.Add("version", Program.Version);
+
+            return response;
         }
 
         [Route("api/transaction")]
