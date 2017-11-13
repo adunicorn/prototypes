@@ -122,7 +122,7 @@ CHF";
             while (_wait) { }
 
             var client = new RestClient(target);
-            client.Timeout = 1300;
+            client.Timeout = 5000;
 
             int errorCounter = 0;
 
@@ -130,38 +130,38 @@ CHF";
             {
                 try
                 {
-                    var tid = _rnd.Next(2, 900);
+                    await Task.Delay(_rnd.Next(1500, 2000));
 
-                    await Task.Delay(1000);
-                    //SetText(label, "...");
+                    var tid = _rnd.Next(2, 900);
 
                     var response = await client.ExecuteGetTaskAsync<Transaction>(new RestRequest($"/api/transaction/{tid}"));
 
-                    if (!response.IsSuccessful)
-                    {
-                        SetText(label, (++errorCounter).ToString());
-                        await ChangeColorAsync(label, Color.Red);
-                    }
-                    else
+                    if (response.IsSuccessful)
                     {
                         SetText(label, $@"{response.Data.amount}
 {response.Data.currency}");
 
-                        var header = response.Headers.FirstOrDefault(x => x.Name == "version");
+                        var version = response.Headers.FirstOrDefault(x => x.Name == "version");
 
-                        if(header == null || header.Value.ToString().Contains("1"))
+                        if(! version.Value.ToString().Contains("new"))
                             await ChangeColorAsync(label, Color.Green);
                         else
                             await ChangeColorAsync(label, Color.Yellow);
 
                         errorCounter = 0;
                     }
+                    else
+                    {
+                        SetText(label, (++errorCounter).ToString());
+                        await ChangeColorAsync(label, Color.Red);
+
+                    }
                 }
                 catch (Exception e)
                 {
                     SetText(label, (++errorCounter).ToString());
                     Console.WriteLine(e);
-                    await ChangeColorAsync(label, Color.Yellow);
+                    await ChangeColorAsync(label, Color.Orange);
                 }
             }
         }
