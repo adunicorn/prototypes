@@ -76,7 +76,7 @@ namespace IssuingClient
 
                 label.Font = new Font(_labelFontFamily, fontSize, label.Font.Style);
                 label.BackColor = Color.White;
-                label.Text = "asd";
+                label.Text = ".";
 
                 box.Controls.Add(label);
 
@@ -122,7 +122,7 @@ CHF";
             while (_wait) { }
 
             var client = new RestClient(target);
-            client.Timeout = 300;
+            client.Timeout = 1300;
 
             int errorCounter = 0;
 
@@ -130,11 +130,10 @@ CHF";
             {
                 try
                 {
-                    var tid = _rnd.Next(2, 200);
+                    var tid = _rnd.Next(2, 900);
 
-                    await Task.Delay(_rnd.Next(500, 1000));
+                    await Task.Delay(1000);
                     SetText(label, "...");
-                    await Task.Delay(50);
 
                     var response = await client.ExecuteGetTaskAsync<Transaction>(new RestRequest($"/api/transaction/{tid}"));
                     if (!response.IsSuccessful)
@@ -144,9 +143,6 @@ CHF";
 {response.Data.currency}");
 
                     var header = response.Headers.FirstOrDefault(x => x.Name == "version");
-
-
-
 
                     if(header == null || header.Value.ToString().Contains("1"))
                         await ChangeColorAsync(label, Color.Green);
@@ -171,9 +167,9 @@ CHF";
 
         private static async Task ChangeColorAsync(Label label, Color labelBackColor)
         {
-            label.BackColor = Color.DimGray;
+//            label.BackColor = Color.DimGray;
 
-            await Task.Delay(50);
+//            await Task.Delay(50);
 
             label.BackColor = labelBackColor;
         }
