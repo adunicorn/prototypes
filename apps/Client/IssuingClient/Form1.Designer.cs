@@ -1,4 +1,6 @@
-﻿namespace IssuingClient
+﻿using System.Windows.Forms;
+
+namespace IssuingClient
 {
     partial class Form1
     {
@@ -76,6 +78,7 @@
             "20",
             "50",
             "100"});
+            this.comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
             this.comboBox1.Location = new System.Drawing.Point(373, 15);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(121, 21);
@@ -105,6 +108,7 @@
             this.cmbService.Items.AddRange(new object[] {
             "Old service",
             "New service"});
+            this.cmbService.DropDownStyle = ComboBoxStyle.DropDownList;
             this.cmbService.Location = new System.Drawing.Point(58, 14);
             this.cmbService.Name = "cmbService";
             this.cmbService.Size = new System.Drawing.Size(121, 21);
