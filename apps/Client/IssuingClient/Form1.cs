@@ -126,15 +126,18 @@ CHF";
 
             int errorCounter = 0;
 
+            RestRequest request = new RestRequest();
             while (!_stop)
             {
+                IRestResponse<Transaction> response;
                 try
                 {
                     await Task.Delay(_rnd.Next(1500, 2000));
 
                     var tid = _rnd.Next(2, 900);
 
-                    var response = await client.ExecuteGetTaskAsync<Transaction>(new RestRequest($"/api/transaction/{tid}"));
+                    request.Resource = $"/api/transaction/{tid}";
+                    response = await client.ExecuteGetTaskAsync<Transaction>(request);
 
                     if (response.IsSuccessful)
                     {
@@ -163,7 +166,13 @@ CHF";
                     Console.WriteLine(e);
                     ChangeColor(label, Color.Orange);
                 }
+                finally
+                {
+                    response = null;
+                }
             }
+
+            client = null;
         }
 
         private static void SetText(Label label, string text)
