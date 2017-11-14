@@ -6,7 +6,7 @@ namespace IssuingService
 {
     public class Program
     {
-        public static string Version = "v31 new";
+        public static string Version = "v33 new";
         public static string RedisMasterHostName = Environment.GetEnvironmentVariable("REDIS_MASTER_SERVICE_HOST");
         public static string RedisSlaveHostName = "localhost";
         public static string RedisPassword = "redis";

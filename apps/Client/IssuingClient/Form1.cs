@@ -143,10 +143,10 @@ CHF";
 
                         var version = response.Headers.FirstOrDefault(x => x.Name == "version");
 
-                        if(! version.Value.ToString().Contains("new"))
-                            ChangeColor(label, Color.Green);
-                        else
+                        if(version != null && version.Value.ToString().Contains("new"))
                             ChangeColor(label, Color.Yellow);
+                        else
+                            ChangeColor(label, Color.Green);
 
                         errorCounter = 0;
                     }
@@ -184,7 +184,7 @@ CHF";
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            var target = (cmbService.SelectedIndex == 0) ? "http://oldissuing.192.168.64.11.nip.io" : "http://issuing.192.168.64.11.nip.io/";
+            var target = (cmbService.SelectedIndex == 0) ? "http://oldissuing.192.168.64.11.nip.io/" : "http://issuing.192.168.64.11.nip.io/";
             Console.WriteLine($"Using target {target}");
             GenerateCallers(int.Parse(comboBox1.SelectedItem.ToString()), target);
         }
