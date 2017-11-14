@@ -11,10 +11,10 @@ spec:
   containers:
     readinessProbe:
       httpGet:
-        path: /
+        path: /api/transaction/3
         port: 5000
-      initialDelaySeconds: 1
-      timeoutSeconds: 50
+      initialDelaySeconds: 10
+      timeoutSeconds: 1
   ports:
   - name: 5000-tcp
     port: 5000
