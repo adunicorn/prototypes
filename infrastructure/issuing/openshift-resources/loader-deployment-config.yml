@@ -9,7 +9,7 @@ metadata:
     app: loader
   name: loader
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     app: loader
     deploymentconfig: loader
