@@ -22,9 +22,9 @@ descriptions=[
     ("Ikea table", 200.0),
     ("Ikea chair", 70.0),
 
-    ("Renault Scenic", 25000.0),
-    ("Ferrari Testarossa", 300000.0),
-    ("Suzuki Swift", 29000.0),
+#    ("Renault Scenic", 25000.0),
+#    ("Ferrari Testarossa", 300000.0),
+#    ("Suzuki Swift", 29000.0),
     ("Swatch watch model B80", 200.0),
 
     ("ErgoDox Keyboard", 200.0),
