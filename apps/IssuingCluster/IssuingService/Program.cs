@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.Owin.Hosting;
-using System.Threading.Tasks;
 
 namespace IssuingService
 {
@@ -22,13 +21,7 @@ namespace IssuingService
             {
                 Console.WriteLine("App started with address '{0}' on a machine '{1}' with OS '{2}'", baseAddress, Environment.MachineName, Environment.OSVersion);
                 Console.WriteLine();
-                while(true)
-                {
-                    Task.Run(async () =>
-                    {
-                        await Task.Delay(500);
-                    }).GetAwaiter().GetResult();
-                }
+                Thread.Sleep(Timeout.Infinite);
             }
         }
     }

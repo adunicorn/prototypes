@@ -107,7 +107,8 @@ namespace IssuingClient
             this.cmbService.FormattingEnabled = true;
             this.cmbService.Items.AddRange(new object[] {
             "Old service",
-            "New service"});
+            "New service",
+            "Core service"});
             this.cmbService.DropDownStyle = ComboBoxStyle.DropDownList;
             this.cmbService.Location = new System.Drawing.Point(58, 14);
             this.cmbService.Name = "cmbService";

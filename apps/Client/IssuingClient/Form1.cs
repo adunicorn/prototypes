@@ -191,9 +191,16 @@ CHF";
             Thread.Sleep(_rnd.Next(ms));
         }
 
+        private String GetServiceURL(int index)
+        {
+            if(index == 0) return "http://oldissuing.192.168.64.11.nip.io/";
+            else if(index == 1) return "http://issuing.192.168.64.11.nip.io/";
+            else return "http://coreissuing.192.168.64.11.nip.io/";
+        }
+
         private void button1_Click_1(object sender, EventArgs e)
         {
-            var target = (cmbService.SelectedIndex == 0) ? "http://oldissuing.192.168.64.11.nip.io/" : "http://issuing.192.168.64.11.nip.io/";
+            var target = GetServiceURL(cmbService.SelectedIndex);
             Console.WriteLine($"Using target {target}");
             GenerateCallers(int.Parse(comboBox1.SelectedItem.ToString()), target);
         }
