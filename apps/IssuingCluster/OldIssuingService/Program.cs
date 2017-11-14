@@ -6,7 +6,7 @@ namespace OldIssuingService
 {
     public static class Program
     {
-        public static string Version = "v1";
+        public static string Version = "v4";
 
         public static void Main(string[] args)
         {
@@ -14,7 +14,7 @@ namespace OldIssuingService
 
             using (WebApp.Start<Startup>(url: baseAddress))
             {
-                Console.WriteLine("App started with address '{0}' on a machine '{1}' with OS '{2}'", baseAddress,
+                Console.WriteLine("App version {0} started with address '{1}' on a machine '{2}' with OS '{3}'", Program.Version, baseAddress,
                     Environment.MachineName, Environment.OSVersion);
                 Console.WriteLine();
                 Thread.Sleep(Timeout.Infinite);
