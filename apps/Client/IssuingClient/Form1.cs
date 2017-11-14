@@ -50,7 +50,7 @@ namespace IssuingClient
                     nrRows = 10;
                     break;
                 default:
-                    MessageBox.Show("Nr boxes invalid");
+                    MessageBox.Show("Invalid number of boxes");
                     return;
             }
 
@@ -144,16 +144,16 @@ CHF";
                         var version = response.Headers.FirstOrDefault(x => x.Name == "version");
 
                         if(! version.Value.ToString().Contains("new"))
-                            await ChangeColorAsync(label, Color.Green);
+                            ChangeColor(label, Color.Green);
                         else
-                            await ChangeColorAsync(label, Color.Yellow);
+                            ChangeColor(label, Color.Yellow);
 
                         errorCounter = 0;
                     }
                     else
                     {
                         SetText(label, (++errorCounter).ToString());
-                        await ChangeColorAsync(label, Color.Red);
+                        ChangeColor(label, Color.Red);
 
                     }
                 }
@@ -161,7 +161,7 @@ CHF";
                 {
                     SetText(label, (++errorCounter).ToString());
                     Console.WriteLine(e);
-                    await ChangeColorAsync(label, Color.Orange);
+                    ChangeColor(label, Color.Orange);
                 }
             }
         }
@@ -171,13 +171,9 @@ CHF";
             label.BeginInvoke((MethodInvoker) delegate { label.Text = text; });
         }
 
-        private static async Task ChangeColorAsync(Label label, Color labelBackColor)
+        private static void ChangeColor(Label label, Color labelBackColor)
         {
-//            label.BackColor = Color.DimGray;
-
-//            await Task.Delay(50);
-
-            label.BackColor = labelBackColor;
+            label.BeginInvoke((MethodInvoker) delegate { label.BackColor = labelBackColor; });
         }
 
 
