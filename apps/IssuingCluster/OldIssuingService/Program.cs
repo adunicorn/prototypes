@@ -6,7 +6,7 @@ namespace OldIssuingService
 {
     public static class Program
     {
-        public static string Version = "v4";
+        public static string Version = "v5 new";
 
         public static void Main(string[] args)
         {
