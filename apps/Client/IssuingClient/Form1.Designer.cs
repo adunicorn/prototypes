@@ -78,6 +78,7 @@ namespace IssuingClient
             "20",
             "50",
             "100"});
+
             this.comboBox1.DropDownStyle = ComboBoxStyle.DropDownList;
             this.comboBox1.Location = new System.Drawing.Point(373, 15);
             this.comboBox1.Name = "comboBox1";
@@ -108,7 +109,8 @@ namespace IssuingClient
             this.cmbService.Items.AddRange(new object[] {
             "Old service",
             "New service",
-            "Core service"});
+            "Py service"});
+
             this.cmbService.DropDownStyle = ComboBoxStyle.DropDownList;
             this.cmbService.Location = new System.Drawing.Point(58, 14);
             this.cmbService.Name = "cmbService";

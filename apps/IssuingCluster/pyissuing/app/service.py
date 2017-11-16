@@ -1,24 +1,55 @@
-from flask import Flask
+from flask import Flask, abort
 from flask import jsonify
 from flask import make_response
 import mock
+import redis
+import json
+import os
+
+#host = os.getenv('REDIS_MASTER_SERVICE_HOST')
+host = 'localhost'
+rs = redis.Redis(host=host, password='redis')
+
+version="100 old"
 
 app = Flask(__name__)
 
-
 @app.route("/")
 def info():
-    return "PyIssuing v2"
+    info = rs.info()
+    return jsonify(info)
+    return version
+
+
+@app.route("/is_ready")
+def is_ready():
+    info = rs.info()
+    if info['master_sync_in_progress'] == 0:
+        return "OK"
+    else:
+        return "Not ready", 503
+
+
+@app.route("/fail")
+def this_fails():
+    return "Fails", 503
 
 @app.route("/api/transaction/<int:id>")
 def get_transaction(id):
-    resp = make_response(jsonify(get_transaction(id)))
-    resp.headers["version"] = "2 new"
+    resp = make_response(jsonify(read_transaction(id)))
+    resp.headers["version"] = version
     return resp
 
-def get_transaction(id):
-    return {"id": 1, "amount": 100, "description": "some dummy value"}
-    
+
+def read_transaction(id):
+    if id == 1:
+        return {"id": 1, "amount": 100, "description": "some dummy value"}
+    else:
+        rs = redis.Redis(host=host, password='redis')
+        record = rs.get("transaction_%s" % id)
+        return json.loads(record)
+
+
 
 if __name__ == '__main__':
     with mock.patch('pwd.getpwuid') as getpw:

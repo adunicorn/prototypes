@@ -6,7 +6,7 @@ metadata:
   creationTimestamp: null
   labels:
     app: issuing
-  name: issuing
+  name: pyissuing
 spec:
   ports:
   - name: 5000-tcp
@@ -18,7 +18,7 @@ spec:
     protocol: TCP
     targetPort: 6379
   selector:
-    deploymentconfig: issuing
+    deploymentconfig: pyissuing
   sessionAffinity: None
   type: ClusterIP
 status:

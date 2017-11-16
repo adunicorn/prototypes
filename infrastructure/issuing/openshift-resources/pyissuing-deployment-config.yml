@@ -7,12 +7,12 @@ metadata:
   generation: 1
   labels:
     app: issuing
-  name: issuing
+  name: pyissuing
 spec:
   replicas: 2
   selector:
     app: issuing
-    deploymentconfig: issuing
+    deploymentconfig: pyissuing
   strategy:
     activeDeadlineSeconds: 21600
     resources: {}
@@ -30,17 +30,17 @@ spec:
       creationTimestamp: null
       labels:
         app: issuing
-        deploymentconfig: issuing
+        deploymentconfig: pyissuing
     spec:
       containers:
-      - image: adunicorn/issuing:latest
+      - image: adunicorn/pyissuing:latest
         imagePullPolicy: Always
-        name: issuing
+        name: pyissuing
         readinessProbe:
           httpGet:
-            path: /
+            path: /is_ready
             port: 5000
-          initialDelaySeconds: 15
+          initialDelaySeconds: 5
           timeoutSeconds: 1
         ports:
         - containerPort: 5000
@@ -49,10 +49,7 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
 
-      - image: redis:latest
-        name: redis-slave
-        imagePullPolicy: Always
-        env:
+      - env:
         - name: REDIS_REPLICATION_MODE
           value: slave
         - name: REDIS_MASTER_HOST
@@ -63,13 +60,9 @@ spec:
           value: redis
         - name: REDIS_PASSWORD
           value: redis
-        
-        livenessProbe:
-          tcpSocket:
-            port: 6379
-          initialDelaySeconds: 1
-          periodoSeconds: 1
-
+        image: redis:latest
+        imagePullPolicy: Always
+        name: redis-slave
         ports:
         - containerPort: 6379
           protocol: TCP
@@ -97,10 +90,10 @@ spec:
   - imageChangeParams:
       automatic: true
       containerNames:
-      - issuing
+      - pyissuing
       from:
         kind: ImageStreamTag
-        name: issuing:latest
+        name: pyissuing:latest
         namespace: issuing
     type: ImageChange
 status:

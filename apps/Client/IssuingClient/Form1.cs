@@ -15,7 +15,6 @@ namespace IssuingClient
         delegate System.Threading.Tasks.Task CallerDelegate(Label label, string target);
         readonly Random _rnd = new Random();
         private static bool _stop;
-        private static bool _wait;
         private static FontFamily _labelFontFamily = FontFamily.GenericSansSerif;
 
         public Form1()
@@ -23,6 +22,9 @@ namespace IssuingClient
             InitializeComponent();
             comboBox1.SelectedIndex = 0;
             cmbService.SelectedIndex = 0;
+
+            this.cmbService.SelectedIndex = 2;
+            this.comboBox1.SelectedIndex = 1;
         }
 
         private void GenerateCallers(int count, string target)
@@ -90,13 +92,11 @@ namespace IssuingClient
             }
 
             _stop = false;
-            _wait = true;
 
             var tasks = labels.Select(l => new Task( async () => await StartCallerAsync(l, target)));
 
             Parallel.ForEach(tasks, t => t.Start());
 
-            _wait = false;
         }
 
         private static float CalculateFontSize(int height, int width)
@@ -119,25 +119,22 @@ CHF";
 
         private async System.Threading.Tasks.Task StartCallerAsync(Label label, string target)
         {
-            while (_wait) { }
-
-            var client = new RestClient(target);
-            client.Timeout = 7000;
-
             int errorCounter = 0;
 
-            RestRequest request = new RestRequest();
             while (!_stop)
             {
-                IRestResponse<Transaction> response;
                 try
                 {
-                    await Task.Delay(_rnd.Next(1500, 2000));
+                    await Task.Delay(_rnd.Next(1800, 2500));
 
-                    var tid = _rnd.Next(2, 900);
+                    var client = new RestClient(target);
+                    client.Timeout = 10000;
+                    RestRequest request = new RestRequest();
 
+                    var tid = _rnd.Next(2, 999);
                     request.Resource = $"/api/transaction/{tid}";
-                    response = await client.ExecuteGetTaskAsync<Transaction>(request);
+
+                    IRestResponse<Transaction> response = await client.ExecuteGetTaskAsync<Transaction>(request);
 
                     if (response.IsSuccessful)
                     {
@@ -157,6 +154,7 @@ CHF";
                     {
                         SetText(label, (++errorCounter).ToString());
                         ChangeColor(label, Color.Red);
+                        Console.WriteLine($"{request.Resource} => Response status: {response.ResponseStatus} , HTTP status code: {response.StatusCode}");
 
                     }
                 }
@@ -166,13 +164,7 @@ CHF";
                     Console.WriteLine(e);
                     ChangeColor(label, Color.Orange);
                 }
-                finally
-                {
-                    response = null;
-                }
             }
-
-            client = null;
         }
 
         private static void SetText(Label label, string text)
@@ -195,7 +187,7 @@ CHF";
         {
             if(index == 0) return "http://oldissuing.192.168.64.11.nip.io/";
             else if(index == 1) return "http://issuing.192.168.64.11.nip.io/";
-            else return "http://coreissuing.192.168.64.11.nip.io/";
+            else return "http://pyissuing.192.168.64.11.nip.io/";
         }
 
         private void button1_Click_1(object sender, EventArgs e)
