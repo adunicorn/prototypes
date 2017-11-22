@@ -42,6 +42,7 @@ spec:
             port: 5000
           initialDelaySeconds: 15
           timeoutSeconds: 1
+          periodSeconds: 1
         ports:
         - containerPort: 5000
           protocol: TCP
@@ -68,7 +69,7 @@ spec:
           tcpSocket:
             port: 6379
           initialDelaySeconds: 1
-          periodoSeconds: 1
+          periodSeconds: 1
 
         ports:
         - containerPort: 6379

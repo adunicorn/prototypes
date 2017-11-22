@@ -1,20 +1,18 @@
-FROM ubuntu
+FROM python:2-alpine
 MAINTAINER Arialdo Martini arialdomartini@gmail.com
 
-RUN apt-get update -qqy
-RUN apt-get upgrade -qqy
-RUN apt-get install python python-pip -qqy
-#RUN pip install virtualenv
+RUN pip install gunicorn==19.6.0
 
-RUN chmod g+w /etc/passwd
-
-#COPY adduser.sh /setup/adduser.sh
-#RUN useradd -m -p xxx -s /bin/bash 1001 -u 1001
 
 COPY ./app /app
 WORKDIR /app
 
+
 RUN pip install -r requirements.txt
+
 EXPOSE 5000
 USER 1001
-CMD ["python", "service.py"]
+
+#ENTRYPOINT ["/usr/local/bin/gunicorn"]
+#CMD ["-w", "1", "-b", "0.0.0.0:5000", "--threads", "1", "app:app", "--access-logfile", "/dev/stdout", "--error-logfile", "/dev/stdout"]
+CMD ["python", "app.py"]

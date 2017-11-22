@@ -114,7 +114,7 @@ CHF";
                 label.Font = new Font(label.Font.FontFamily, label.Font.Size - 0.5f, label.Font.Style);
             }
 
-            return label.Font.Size / 1.5f;
+            return label.Font.Size / 1f;
         }
 
         private async System.Threading.Tasks.Task StartCallerAsync(Label label, string target)
@@ -125,10 +125,10 @@ CHF";
             {
                 try
                 {
-                    await Task.Delay(_rnd.Next(1800, 2500));
+                    await Task.Delay(_rnd.Next(500, 1500));
 
                     var client = new RestClient(target);
-                    client.Timeout = 10000;
+                    client.Timeout = 1500;
                     RestRequest request = new RestRequest();
 
                     var tid = _rnd.Next(2, 999);

@@ -6,13 +6,15 @@ import redis
 import json
 import os
 
-#host = os.getenv('REDIS_MASTER_SERVICE_HOST')
-host = 'localhost'
+host = os.getenv('REDIS_MASTER_SERVICE_HOST')
+#host = 'localhost'
 rs = redis.Redis(host=host, password='redis')
 
-version="100 old"
+version="gunicorn old"
 
 app = Flask(__name__)
+
+shutting_down = False
 
 @app.route("/")
 def info():
@@ -23,11 +25,7 @@ def info():
 
 @app.route("/is_ready")
 def is_ready():
-    info = rs.info()
-    if info['master_sync_in_progress'] == 0:
-        return "OK"
-    else:
-        return "Not ready", 503
+    return get_transaction(3)
 
 
 @app.route("/fail")
@@ -52,6 +50,7 @@ def read_transaction(id):
 
 
 if __name__ == '__main__':
+
     with mock.patch('pwd.getpwuid') as getpw:
         getpw.return_value = "foobar"
         app.run(host="0.0.0.0")
