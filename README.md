@@ -4,6 +4,69 @@ Disposable prototypes for our experiments
 ## Setup
 * Install Docker;
 * Setup a `/work` shared folded on VirtualBox VM poiting to the directory containing this project
+* Install MiniShift and start it with 
+```
+minishift start
+```
+
+The console should be available at:
+
+```
+https://192.168.64.11:8443
+```
+with
+
+username: `admin`
+
+password: `admin`
+  
+### Create the project `issuing`
+
+Make sure that no previous `issuing` project exists.
+
+* Delete the project in OpenShift with
+
+```
+cd infrastructure
+./delete-project.sh
+```
+
+`oc projects` should not list the project `issuing` anymore.
+
+* Create the project with
+
+```
+./create-projects.sh
+```
+
+that should take care of all the process, creating all the needed elements in OpenShift.
+
+Opening the dashboard at a URL such as [https://192.168.64.11:8443/console/project/issuing/overview](https://192.168.64.11:8443/console/project/issuing/overview) it should be possible to see the project deployments running.
+
+Wait ta minute to let all the deployment tasks end.
+
+### Compile the Windows Forms client
+
+* Start Docker
+
+* Enter the client project with
+
+```
+cd apps/Client
+```
+
+* Compile the client with
+
+```
+./compile.sh
+```
+
+* Run the client with
+
+```
+./run.sh
+```
+
 
 
 ## Build

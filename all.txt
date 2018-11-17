@@ -1,0 +1,16 @@
+18698  rm ~/.minishift/machines/minishift/minishift.pid
+18699  rm ~/.minishift/machines/minishift/minishift.pid
+18700  minishift status
+18701  minishift start
+18702  cd prg/openshift/prototypes
+18703  ls
+18704  ./publish-all.sh
+18705  ./minishift-docker-login.sh
+18706  minishift login
+18707  minishift status
+18708  ./minishift-docker-login.sh
+18709  ls
+18710  l
+18711  cat docker-use-local.sh
+18712  ./docker-use-local.sh
+18713  ./minishift-docker-login.sh
