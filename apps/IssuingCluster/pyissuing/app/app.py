@@ -6,11 +6,14 @@ import redis
 import json
 import os
 
+
 host = os.getenv('REDIS_MASTER_SERVICE_HOST')
 #host = 'localhost'
 rs = redis.Redis(host=host, password='redis')
 
-version="gunicorn old"
+version="gunicorn v1"
+
+print(version)
 
 app = Flask(__name__)
 

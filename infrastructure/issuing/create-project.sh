@@ -8,9 +8,9 @@ oc new-project ${PROJECT_NAME}
 
 echo "\n\n\n** Importing the docker images"
 oc import-image redis --from=docker.io/bitnami/redis --confirm
-oc import-image issuing --from=docker.io/adunicorn/issuing --confirm
+#oc import-image issuing --from=docker.io/adunicorn/issuing --confirm
 oc import-image pyissuing --from=docker.io/adunicorn/pyissuing --confirm
-oc import-image old-issuing --from=docker.io/adunicorn/old-issuing --confirm
+#oc import-image old-issuing --from=docker.io/adunicorn/old-issuing --confirm
 oc import-image consumer --from=docker.io/adunicorn/consumer --confirm
 oc import-image rabbitmq --from=docker.io/luiscoms/openshift-rabbitmq --all --confirm
 oc import-image postgresql:9.5 --from=docker.io/centos/postgresql-95-centos7 --confirm
@@ -32,11 +32,11 @@ oc create -f openshift-resources/postgresql-ingress.yml
 oc create -f openshift-resources/redis-master-deployment-config.yml
 oc create -f openshift-resources/redis-master-service.yml
 
-## Issuing
-oc create -f openshift-resources/issuing-deployment-config.yml
-oc create -f openshift-resources/issuing-service.yml
-oc create -f openshift-resources/issuing-route.yml
-oc create -f openshift-resources/issuing-minishift-route.yml
+### Issuing
+#oc create -f openshift-resources/issuing-deployment-config.yml
+#oc create -f openshift-resources/issuing-service.yml
+#oc create -f openshift-resources/issuing-route.yml
+#oc create -f openshift-resources/issuing-minishift-route.yml
 
 ## PyIssuing
 oc create -f openshift-resources/pyissuing-deployment-config.yml

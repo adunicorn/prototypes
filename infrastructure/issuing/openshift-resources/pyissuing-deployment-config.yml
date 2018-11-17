@@ -9,7 +9,7 @@ metadata:
     app: issuing
   name: pyissuing
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     app: issuing
     deploymentconfig: pyissuing
