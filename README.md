@@ -2,6 +2,22 @@
 
 Disposable prototypes for our experiments
 
+
+# Run presentation
+
+See [Setup](#setup) for setting the environment up. 
+
+* Start Docker in macOS
+* `cd ~prg/openshift/prototypes`
+* `minishift start`
+* If `pyissuing` is failing, login into the application `Loader`, open a terminal and run `/app/create.sh` to load data into Redis
+* In a separate Shell run `cd ./apps/client && ./run.sh 2> /dev/null&`
+* `oc login` (admin/admin)
+* `source ./minishift-docker-login.sh`
+* `cd ./apps/IssuingCluster/pyissuing`
+* Modify the code as desired, then deploy it with `./build-and-push.sh`
+
+
 ## Setup
 
 * Install Docker;
